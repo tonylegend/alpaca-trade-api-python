@@ -44,7 +44,8 @@ class AsyncRest:
         """
         df = pd.DataFrame({})
         url = self._get_historic_url(entity_type, symbol)
-        async for packet in self._request(url, payload):
+        responses = await self._request(url, payload)
+        async for packet in responses:
             if packet.get(entity_type):
                 response = entity_list_type(packet[entity_type]).df
                 df = pd.concat([df, response], axis=0)
