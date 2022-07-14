@@ -1,3 +1,5 @@
+import inspect
+
 import aiohttp
 import asyncio
 
@@ -44,7 +46,8 @@ class AsyncRest:
         """
         df = pd.DataFrame({})
         url = self._get_historic_url(entity_type, symbol)
-        responses = await self._request(url, payload)
+        _request = self._request(url, payload)
+        responses = await _request if inspect.isawaitable(_request) else _request
         async for packet in responses:
             if packet.get(entity_type):
                 response = entity_list_type(packet[entity_type]).df
